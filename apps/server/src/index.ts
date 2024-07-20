@@ -6,5 +6,7 @@ async function init(){
     const PORT = process.env.PORT ?? 4000;
     socketService.io.attach(httpServer);
     httpServer.listen(PORT,()=>{console.log(`HTTP Server running on port ${PORT}`)})
+
+    socketService.initListners();
 }
 init() 
