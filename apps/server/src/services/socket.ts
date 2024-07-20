@@ -1,8 +1,20 @@
 import {Server} from 'socket.io'
-import { Redis } from 'ioredis';
+import Redis  from 'ioredis';
 
-const pub = new Redis();
-const sub = new Redis();
+const pub = new Redis(
+   { host:'caching-eb2d3db-aditi6202-0280.i.aivencloud.com',
+    port:20900,
+    username:'default',
+    password:'your_pass'
+    }
+);
+const sub = new Redis( 
+    { host:'caching-eb2d3db-aditi6202-0280.i.aivencloud.com',
+    port:20900,
+    username:'default',
+    password:'your_pass'
+}
+);
 
 class SocketService {
     private _io: Server;
@@ -14,6 +26,7 @@ class SocketService {
                 origin:'*'
             }
         });
+        sub.subscribe('MESSAGES')
     }
     public initListners(){
         console.log("Initializing socket listeners")
@@ -22,7 +35,14 @@ class SocketService {
             console.log("New Socket Connected", socket.id);
             socket.on("event:message", async({message}:{message:string})=>{
                 console.log("New message recieved", message);
+           
+                await pub.publish('MESSAGES',JSON.stringify({message}))
             })
+        })
+        sub.on('message',(channel,message)=>{
+            if(channel === 'MESSAGES'){
+                io.emit("message", message)
+            }
         })
     }
     get io(){

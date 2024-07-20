@@ -3,14 +3,12 @@ import { useState } from 'react';
 import { useSocket } from './context/socketProvider'
 import classes from './page.module.css'
 export default function page(){
-  const {sendMessage} = useSocket();
+  const {sendMessage, messages} = useSocket();
   const [message, setMessage]= useState('')
   return(
 
     <div>
-      <div>
-        <h1>All messages will appear here</h1>
-      </div>
+      
       <div>
 
         <input 
@@ -21,6 +19,10 @@ export default function page(){
         className={classes["send-button"]}
          onClick={(e)=>{sendMessage(message)}}
         >Send</button>
+      </div>
+      <div>
+        <h1>All messages will appear here</h1>
+        <div>{messages.map(e=><li key={e}>{e}</li>)} </div>
       </div>
     </div>
   )
