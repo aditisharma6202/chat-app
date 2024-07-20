@@ -1,10 +1,19 @@
 import {Server} from 'socket.io'
+import { Redis } from 'ioredis';
+
+const pub = new Redis();
+const sub = new Redis();
 
 class SocketService {
     private _io: Server;
     constructor(){
         console.log("Init socket server")
-        this._io = new Server();
+        this._io = new Server({
+            cors:{
+                allowedHeaders:['*'],
+                origin:'*'
+            }
+        });
     }
     public initListners(){
         console.log("Initializing socket listeners")
